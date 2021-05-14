@@ -128,7 +128,6 @@ def encrypt(key, iv, plaintext, auth_data=b''):
         auth_tag ^= bytes_to_long(temp.encrypt(
                                   long_to_bytes((iv << 32) | 1, 16)))
 
-        # assert len(ciphertext) == len(plaintext)
         assert auth_tag < (1 << 128)
         return ciphertext, auth_tag
     

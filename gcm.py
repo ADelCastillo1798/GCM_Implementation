@@ -80,7 +80,7 @@ auth_key = (aes_ecb.encrypt(b'\x00' * 16))
 #print(gf_2_128_mul(auth_key, (1 << (8 * 1))))
 #print(multiply(auth_key, sample))
 x = b'111011'
-print((sample[2]))
+# print((sample[2]))
         
 def times_auth_key(val):
         res = 0
@@ -155,27 +155,28 @@ def decrypt(key, iv, ciphertext, auth_tag, auth_data=b''):
             bytes_to_long(aes_ecb.encrypt(
             long_to_bytes((iv << 32) | 1, 16))):
         print('The authenticaiton tag is invalid')
+        return
 
-        len_ciphertext = len(ciphertext)
-        if len_ciphertext > 0:
-            counter = Counter.new(
-                nbits=32,
-                prefix=long_to_bytes(iv, 12),
-                initial_value=2,
-                allow_wraparound=True)
-            aes_ctr = AES.new(key, AES.MODE_CTR, counter=counter)
+    len_ciphertext = len(ciphertext)
+    if len_ciphertext > 0:
+        counter = Counter.new(
+            nbits=32,
+            prefix=long_to_bytes(iv, 12),
+            initial_value=2,
+            allow_wraparound=True)
+        aes_ctr = AES.new(key, AES.MODE_CTR, counter=counter)
 
-            if 0 != len_ciphertext % 16:
-                padded_ciphertext = ciphertext + \
-                    b'\x00' * (16 - len_ciphertext % 16)
-            else:
-                padded_ciphertext = ciphertext
-            plaintext = aes_ctr.decrypt(padded_ciphertext)[:len_ciphertext]
-
+        if 0 != len_ciphertext % 16:
+            padded_ciphertext = ciphertext + \
+                b'\x00' * (16 - len_ciphertext % 16)
         else:
-            plaintext = b''
+            padded_ciphertext = ciphertext
+        plaintext = aes_ctr.decrypt(padded_ciphertext)[:len_ciphertext]
 
-        return plaintext
+    else:
+        plaintext = b''
+
+    return plaintext
 
 master_key = 0xfeffe9928665731c6d6a8f9467308308
 plaintext = b'\xd9\x31\x32\x25\xf8\x84\x06\xe5' + \

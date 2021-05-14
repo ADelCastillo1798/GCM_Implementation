@@ -7,9 +7,9 @@ try:
 except ModuleNotFoundError:
     from Cryptodome.Cipher import AES
     from Cryptodome.Util import Padding
-    from Crypto.Util import Counter
+    from Cryptodome.Util import Counter
     from Cryptodome.Random import get_random_bytes
-    from Crypto.Util.number import bytes_to_long, long_to_bytes
+    from Cryptodome.Util.number import bytes_to_long, long_to_bytes
 
 import conversions as c
 

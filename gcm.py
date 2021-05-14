@@ -32,6 +32,20 @@ except ModuleNotFoundError:
 
 pretable = []
 
+def multiply(x: bytes, y: bytes) -> bytes:
+    r = b"e1"
+    z = b"0"*16
+    v = x
+    #need r, z and v in binary to traverse all 128 bits properly and perform the below
+    for i in range(0,128):
+        if y[i] == 1:
+            z ^= v
+        if v[127] == 0:
+            v = v >> 1
+        else: 
+            v = x.xor((v >> 1), r)
+    return z
+
 def gf_2_128_mul(x, y):
     assert x < (1 << 128)
     assert y < (1 << 128)
@@ -56,16 +70,6 @@ def change_key(key):
             for j in range(256):
                 row.append(gf_2_128_mul(auth_key, j << (8 * i)))
             pretable.append(tuple(row))
-
-key = 0xfeffe9928665731c6d6a8f9467308308
-key = long_to_bytes(key, 16)
-sample = long_to_bytes(1 << (8 * 1))
-aes_ecb = AES.new(key, AES.MODE_ECB)
-auth_key = (aes_ecb.encrypt(b'\x00' * 16))
-#print(gf_2_128_mul(auth_key, (1 << (8 * 1))))
-#print(multiply(auth_key, sample))
-x = b'111011'
-# print((sample[2]))
         
 def times_auth_key(val):
         res = 0

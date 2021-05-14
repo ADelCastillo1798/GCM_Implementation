@@ -11,8 +11,6 @@ except ModuleNotFoundError:
     from Cryptodome.Random import get_random_bytes
     from Cryptodome.Util.number import bytes_to_long, long_to_bytes
 
-import conversions as c
-
 """Built-in Cryptodomex GCM encryption and decryption example"""
 
 # header = b"header"
@@ -33,19 +31,6 @@ import conversions as c
 # print(plaintext)
 
 pretable = []
-def multiply(x: bytes, y: bytes) -> bytes:
-    r = b"e1"
-    z = b"0"*16
-    v = x
-    #need r, z and v in binary to traverse all 128 bits properly and perform the below
-    for i in range(0,128):
-        if y[i] == 1:
-            z ^= v
-        if v[127] == 0:
-            v = v >> 1
-        else: 
-            v = x.xor((v >> 1), r)
-    return z
 
 def gf_2_128_mul(x, y):
     assert x < (1 << 128)
@@ -210,7 +195,7 @@ print('auth tag: ', hex(new_tag))
 
 
 decrypted = decrypt(master_key, init_value, encrypted,
-                new_tag + 1, auth_data)
+                new_tag, auth_data)
 #except InvalidTagException:
         #decrypted = decrypt(master_key,init_value, encrypted, new_tag, auth_data)
 print('decrypted:', hex(bytes_to_long(decrypted)))
